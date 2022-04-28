@@ -1,0 +1,8 @@
+﻿1 КАНАЛ;1kanal
+РОССИЯ 1;russia 1
+НТВ;ntv
+ТВЦ;tvc
+5 КАНАЛ\nПИТЕР;5kanal piter
+РЕН ТВ;ren tv
+СТС;sts
+ТНТ;tnt
