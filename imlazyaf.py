@@ -9,7 +9,7 @@
       - few unimportant but nice little things
   by Ilya Kositsin
   3 April 2022
-  Special for "Призыв" magazine
+  Special for "Призыв" newspaper
   tnx to StackOverflow gentlemen and my laziness
  
 """
@@ -18,35 +18,66 @@
 #   - Fixed day_sort_guide, now he sorts guide correctly
 #     (not through the ass, may the editor forgive me when I put a broken program guide)
 #   - deleted shit code (not all)
-#   + added nice code
+#   - added nice code
 
 #   Update from 22 april 2022
 #   - settings for editing program guide are now external
 #     (no more hardcoded data)
 
+#   Update from 16 july 2022
+#   - added setting for checking markers
+#         before:
+#          12.34 - premiere! shit show
+#          56.78 - shit show
+#         after:
+#          12.34, 56.78 - shit show
+#   - added setting for checking name of series of the show
+#         before:
+#          12.34 - shit show-2 shit in my ass
+#          56.78 - shit show-2 shit in my pantsu 
+#         after:
+#          12.34, 56.78 - shit show
+#   - added timer for measure the script running time 
+
 __author__ = 'Ilya Kositsin'
 __licence__ = 'MIT'
-__version__ = '2.0.2'
+__version__ = '2.0.3'
 __email__ = 'kositsin2010@yandex.ru'
 __status__ = 'Production'
 
 import os
+import time
 from itertools import groupby
 from collections import deque
-
 
 def delete_consecutive_identical_shows(program_guide: list) -> list:
     previous_show = ''
     edited_program_guide = []
+    
+    if not hasattr(delete_consecutive_identical_shows, 'useless_markers'):
+        delete_consecutive_identical_shows.useless_markers = load_optimizing_filter('useless_markers')
+
+    if not hasattr(delete_consecutive_identical_shows, 'shows_with_names_of_series'):
+        delete_consecutive_identical_shows.shows_with_names_of_series = load_optimizing_filter('shows_with_names_of_series')
 
     for line in program_guide:
-        show = line.split(maxsplit=1)[1]
+        time, show = line.split(maxsplit=1)
+
+        for marker in delete_consecutive_identical_shows.useless_markers:
+            if marker in show:
+                show = show.replace(marker + ' ', '') 
+
+        for show_wnos in delete_consecutive_identical_shows.shows_with_names_of_series:
+            if show_wnos in show:
+                splt = show.split('"')
+                splt[1] = show_wnos
+                show = str.join('"', splt)
+
         if show != previous_show:
-            edited_program_guide.append(line)
+            edited_program_guide.append(time + ' ' + show)
         previous_show = show
     
     return edited_program_guide
-
 
 def optimize_program_guide(chan_day_program: list) -> list:
     optimized_guide = []
@@ -58,7 +89,7 @@ def optimize_program_guide(chan_day_program: list) -> list:
 
     shows_list = {}
     for line in chan_day_program:
-        time, show = line.split(maxsplit=1)
+        time, show = line.split(maxsplit=1)    
 
         for rule in list(optimize_program_guide.replacement_rules.keys()):
             if show == rule:
@@ -83,9 +114,8 @@ def optimize_program_guide(chan_day_program: list) -> list:
     optimized_guide.append('\n')
     return optimized_guide
 
-
 def delete_midnight_shows(chan_day_program: list) -> list:
-    unhappy_hours = ['01', '02', '03', '04', '05', '06', '07']
+    unhappy_hours = ['01', '02', '03', '04', '05', '06', '07', '08']
 
     edited_guide = chan_day_program[0:int(len(chan_day_program)/2)]
     unedited_part = chan_day_program[int(len(chan_day_program)/2):len(chan_day_program)]
@@ -103,8 +133,7 @@ def delete_midnight_shows(chan_day_program: list) -> list:
 
     return edited_guide
 
-
-def day_sort_guide(_guide, chans_name, weekdays: list) -> list:
+def day_sort_guide(_guide: list, chans_name: list, weekdays: list) -> list:
     _guide = [deque(i) for i in _guide]
     sorted_guide = [[] for i in range(len(weekdays))]
 
@@ -129,14 +158,12 @@ def day_sort_guide(_guide, chans_name, weekdays: list) -> list:
 
     return sorted_guide
 
-
 def day_check(line: str, weekdays: list) -> bool:
     for day in weekdays:
         if line.startswith(day):
             return True
 
     return False
-
 
 def load_guide(_chans: list) -> list:
     _guide = []
@@ -145,7 +172,6 @@ def load_guide(_chans: list) -> list:
             _guide.append(f.readlines())
 
     return _guide
-
 
 def save_guide(_guide: list, _weekdays: list):
     dir_name = 'out'
@@ -158,7 +184,6 @@ def save_guide(_guide: list, _weekdays: list):
     for i in range(len(_weekdays)):
         with open(os.path.join(dir_name, str(i + 1) + ' - ' + _weekdays[i] + '.txt'), 'w', encoding='utf-8') as f:
             f.writelines(_guide[i])
-
 
 def load_chans_list() -> dict:
     chans = dict()
@@ -176,7 +201,6 @@ def load_chans_list() -> dict:
     
     return chans
 
-
 def load_guide_filter() -> dict:
     filtr = dict()
     buffer = []
@@ -193,8 +217,16 @@ def load_guide_filter() -> dict:
 
     return filtr
 
+def load_optimizing_filter(name: str) -> list:
+    filtr = list()
+    with open(name + '.txt', 'r', encoding='utf-8') as f:
+        for line in f:
+            filtr.append(line.strip())
+    
+    return filtr
 
 if __name__ == "__main__":
+    start = time.perf_counter()
     chans = load_chans_list()
 
     weekdays = [
@@ -209,3 +241,5 @@ if __name__ == "__main__":
 
     guide = day_sort_guide(load_guide(list(chans.values())), chans_name=list(chans.keys()), weekdays=weekdays)
     save_guide(guide, weekdays)
+
+    print(f"Вместо 1.5 часа ты потратил {time.perf_counter() - start:0.4f} секунд")
