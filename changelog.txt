@@ -39,6 +39,6 @@ Update from 1 september 2022
     1-page format: -1 channel and no of spaces between channels
     2-page format: all channels and there are spaces
     example: python imlazyaf.py --pages 1(or 2)
-    all of incorrect data converting to 2 (if you enter --pages 3 or -1 of nothing or "i'm degenerate" 
+    all of incorrect data converting to 2 (if you enter --pages 3 or -1 or nothing or "i'm degenerate" 
     then the program will output the result intended for --pages 2)
   - filters and whitelist moved to 'settings' directory
