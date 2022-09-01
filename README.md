@@ -1,7 +1,7 @@
 # I'm lazy AF
 Basic script for automate editing the program guide
 
-| :shit: Turn this :vomiting_face:| Into this :mechanical_arm::smiling_imp::call_me_hand: |
+| :shit: Turn this :vomiting_face:| Into this :mechanical_arm: :smiling_imp: :call_me_hand: |
 | ------ | ------ |
 |**Chan1**|**Monday**|
 |Monday|Chan1|
