@@ -1,0 +1,44 @@
+Created 3 february 2022 on PowerShell
+    - added feature of deleting midnight shows
+
+Update from 3 April 2022
+    - rewritten in Python cuz I'm tired of this shi.. I mean PowerShell
+    - reworked 'Delete midnight shows' module, now they got smarter and don't delete morning shows
+    - added sorting channels by day
+    - optimized program guide space by removal consecutive identical shows 
+      and listing the times of the show in one line
+    - few unimportant but nice little things
+
+Bugfix from 12 april 2022
+   - Fixed day_sort_guide, now he sorts guide correctly
+     (not through the ass, may the editor forgive me when I put a broken program guide)
+   - deleted shit code (not all)
+   - added nice code
+
+Update from 22 april 2022
+   - settings for editing program guide are now external
+     (no more hardcoded data)
+
+Update from 16 july 2022
+   - added setting for checking markers
+         before:
+          12.34 - premiere! shit show
+          56.78 - shit show
+         after:
+          12.34, 56.78 - shit show
+   - added setting for checking name of series of the show
+         before:
+          12.34 - shit show-2 shit in my ass
+          56.78 - shit show-2 shit in my pantsu 
+         after:
+          12.34, 56.78 - shit show
+   - added timer for measure the script running time
+
+Update from 1 september 2022
+  - added flag --pages for setting 1-page or 2-page format of program guide
+    1-page format: -1 channel and no of spaces between channels
+    2-page format: all channels and there are spaces
+    example: python imlazyaf.py --pages 1(or 2)
+    all of incorrect data converting to 2 (if you enter --pages 3 or -1 of nothing or "i'm degenerate" 
+    then the program will output the result intended for --pages 2)
+  - filters and whitelist moved to 'settings' directory
